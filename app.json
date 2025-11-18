@@ -18,8 +18,17 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "ACCESS_FINE_LOCATION",
+        "NOTIFICATIONS"
+      ],
+      "googleServicesFile": "./google-services.json",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.hikmat97.azadbazar"
     },
     "web": {
       "output": "static",
@@ -30,7 +39,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -38,11 +47,33 @@
             "backgroundColor": "#000000"
           }
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/icon.png",
+          "color": "#FF6B6B",
+          "sounds": [
+            "./assets/notification-sound.wav"
+          ]
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "notification": {
+      "icon": "./assets/images/icon.png",
+      "color": "#FF6B6B",
+      "androidMode": "default",
+      "androidCollapsedTitle": "New message"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "aaad5381-76cb-4f84-b5e6-851de860e97e"
+      }
     }
   }
 }
