@@ -5,7 +5,7 @@ const CONFIG = {
   // Backend API URL
   // For physical device: use your computer's local IP
   // For emulator: use localhost or 10.0.2.2 (Android)
-  API_BASE_URL: 'http://10.114.1.124:5000/api', // Change to YOUR local IP
+  API_BASE_URL: 'http://10.76.190.124:5000/api', // Change to YOUR local IP
   
   // Firebase Configuration
   FIREBASE: {
@@ -25,8 +25,9 @@ const CONFIG = {
     uploadPreset: "kankoryar"
   },
   
+  
   // Socket.io URL
-  SOCKET_URL: 'http://10.114.1.124:5000/', // Change to YOUR local IP
+  SOCKET_URL: 'http://10.76.190.124:5000/', // Change to YOUR local IP
   
   // App Configuration
   APP_NAME: 'azadbazar',

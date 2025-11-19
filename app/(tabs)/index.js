@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   RefreshControl,
   ScrollView,
@@ -16,10 +17,10 @@ import ListingGrid from '../../src/components/listing/ListingGrid';
 import SearchBar from '../../src/components/search/SearchBar';
 import { setCategories, setLoading as setCategoryLoading } from '../../src/store/slices/categorySlice';
 import { setFeaturedListings, setLoading as setListingLoading } from '../../src/store/slices/listingSlice';
-
 export default function HomeScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { user } = useSelector(state => state.auth);
   const { categories, loading: categoryLoading } = useSelector(state => state.category);
   const { featuredListings, loading: listingLoading } = useSelector(state => state.listing);
@@ -64,54 +65,65 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView 
-      style={styles.container}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Welcome to OLX Clone!</Text>
-        {user && (
-          <Text style={styles.subtitle}>Hello, {user.fullName}!</Text>
-        )}
-        
-        {/* Search Bar */}
-        <SearchBar 
-          onPress={handleSearchPress}
-          placeholder="Search for anything..."
-          editable={false}
-        />
-      </View>
+   // ... (inside the return statement)
 
-      {/* Categories */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Browse Categories</Text>
-        </View>
-        <CategoryGrid 
-          categories={categories}
-          onCategoryPress={handleCategoryPress}
-          loading={categoryLoading}
-        />
-      </View>
+<ScrollView 
+  style={styles.container}
+  refreshControl={
+    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+  }
+>
+  {/* Header */}
+  <View style={styles.header}>
+    {/* Title: "Welcome to OLX Clone!" -> t('home.welcome') */}
+    <Text style={styles.title}>{t('home.welcome')}</Text> 
+    
+    {user && (
+      <Text style={styles.subtitle}>
+        {/* Subtitle: "Hello, {user.fullName}!" -> t('home.hello') */}
+        {t('home.hello')}, {user.fullName}!
+      </Text>
+    )}
+    
+    {/* Search Bar */}
+    <SearchBar 
+      onPress={handleSearchPress}
+      // Placeholder: "Search for anything..." -> t('home.findAnything')
+      placeholder={t('home.findAnything')}
+      editable={false}
+    />
+  </View>
 
-      {/* Featured Listings */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Featured Ads</Text>
-          <TouchableOpacity onPress={() => router.push('/search')}>
-            <Text style={styles.seeAll}>See All</Text>
-          </TouchableOpacity>
-        </View>
-        <ListingGrid 
-          listings={featuredListings}
-          onListingPress={handleListingPress}
-          loading={listingLoading}
-        />
-      </View>
-    </ScrollView>
+  {/* Categories */}
+  <View style={styles.section}>
+    <View style={styles.sectionHeader}>
+      {/* Section Title: "Browse Categories" -> t('home.browseCategories') */}
+      <Text style={styles.sectionTitle}>{t('home.browseCategories')}</Text>
+    </View>
+    <CategoryGrid 
+      categories={categories}
+      onCategoryPress={handleCategoryPress}
+      loading={categoryLoading}
+    />
+  </View>
+
+  {/* Featured Listings */}
+  <View style={styles.section}>
+    <View style={styles.sectionHeader}>
+      {/* Section Title: "Featured Ads" -> t('home.featuredAds') */}
+      <Text style={styles.sectionTitle}>{t('home.featuredAds')}</Text>
+      <TouchableOpacity onPress={() => router.push('/search')}>
+        {/* Link: "See All" -> t('common.seeAll') */}
+        <Text style={styles.seeAll}>{t('common.seeAll')}</Text>
+      </TouchableOpacity>
+    </View>
+    <ListingGrid 
+      listings={featuredListings}
+      onListingPress={handleListingPress}
+      loading={listingLoading}
+    />
+  </View>
+</ScrollView>
   );
 }
 

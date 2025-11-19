@@ -1,24 +1,39 @@
 
 
 
+
+
+// app/index.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+
+const LANGUAGE_SELECTED_KEY = '@language_selected';
 
 export default function Index() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    checkAuth();
+    checkInitialSetup();
   }, []);
 
-  const checkAuth = async () => {
+  const checkInitialSetup = async () => {
     try {
       // Add a small delay for splash effect
       await new Promise(resolve => setTimeout(resolve, 1500));
       
+      // Check if language has been selected
+      const languageSelected = await AsyncStorage.getItem(LANGUAGE_SELECTED_KEY);
+      
+      if (!languageSelected) {
+        // First time user - show language selection
+        router.replace('/language-selection');
+        return;
+      }
+      
+      // Check authentication
       const token = await AsyncStorage.getItem('userToken');
       
       if (token) {
@@ -29,8 +44,8 @@ export default function Index() {
         router.replace('/(auth)/login');
       }
     } catch (error) {
-      console.error('Auth check error:', error);
-      router.replace('/(auth)/login');
+      console.error('Initial setup check error:', error);
+      router.replace('/language-selection');
     } finally {
       setIsLoading(false);
     }

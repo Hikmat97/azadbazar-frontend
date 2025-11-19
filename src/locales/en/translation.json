@@ -21,7 +21,10 @@
     "skip": "Skip",
     "done": "Done",
     "retry": "Retry",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "user": "User",
+     "uploading": "Uploading"
+    
   },
   
   "auth": {
@@ -47,7 +50,11 @@
     "invalidEmail": "Invalid email address",
     "passwordTooShort": "Password must be at least 6 characters",
     "passwordsNotMatch": "Passwords do not match",
-    "fillAllFields": "Please fill in all fields"
+    "fillAllFields": "Please fill in all fields",
+    "noAccountFound": "No account found with this email",
+  "incorrectPassword": "Incorrect password",
+  "accountDisabled": "This account has been disabled",
+    "logoutError": "Failed to logout"
   },
   
   "tabs": {
@@ -58,10 +65,11 @@
     "profile": "Profile"
   },
   
+  
   "home": {
-    "welcome": "Welcome to OLX Clone!",
+    "welcome": "Welcome to Azadbazar!",
     "hello": "Hello",
-    "findAnything": "Find anything in Pakistan",
+    "findAnything": "Find anything in Afghanistan",
     "browseCategories": "Browse Categories",
     "featuredAds": "Featured Ads",
     "recentAds": "Recent Ads",
@@ -120,34 +128,40 @@
     }
   },
   
-  "createListing": {
+  "sell": {
     "title": "Post Your Ad",
     "subtitle": "Fill in the details below",
-    "adTitle": "Ad Title",
-    "adTitlePlaceholder": "e.g., iPhone 13 Pro Max",
-    "descriptionPlaceholder": "Describe your item in detail...",
-    "selectCategory": "Select a category",
-    "addPhotos": "Add Photos",
-    "addPhotosHint": "Add up to 5 photos",
-    "gallery": "Gallery",
-    "camera": "Camera",
-    "specificLocation": "Specific Location",
-    "specificLocationPlaceholder": "e.g., Gulberg, DHA, etc.",
-    "cityPlaceholder": "e.g., Karachi, Lahore, Islamabad",
     "postAd": "Post Ad",
-    "updateAd": "Update Ad",
-    "selectCondition": "Select Condition",
+
+    "labelTitle": "Ad Title",
+    "placeholderTitle": "e.g., iPhone 13 Pro Max",
+    "labelDescription": "Description",
+    "placeholderDescription": "Describe your item in detail...",
+    "labelCondition": "Condition",
+    "labelCity": "City",
+    "placeholderCity": "e.g., Karachi, Lahore, Islamabad",
+    "labelLocation": "Specific Location (Optional)",
+    "placeholderLocation": "e.g., Gulberg, DHA, etc.",
+
+    "conditionNew": "New",
+    "conditionLikeNew": "Like New",
+    "conditionGood": "Good",
+    "conditionFair": "Fair",
+    "conditionPoor": "Poor",
+
     "uploadingImages": "Uploading images...",
-    "success": "Your ad has been posted successfully",
-    "updateSuccess": "Your ad has been updated successfully",
-    "error": "Failed to create listing",
+    "postSuccess": "Your ad has been posted successfully",
+    "postError": "Failed to create listing",
+    "viewAd": "View Ad",
+    "postAnother": "Post Another",
+
     "validation": {
       "titleRequired": "Please enter a title",
       "descriptionRequired": "Please enter a description",
-      "priceRequired": "Please enter a valid price",
+      "priceInvalid": "Please enter a valid price",
       "categoryRequired": "Please select a category",
       "cityRequired": "Please enter your city",
-      "imagesRequired": "Please add at least one photo"
+      "photoRequired": "Please add at least one photo"
     }
   },
   
@@ -199,10 +213,16 @@
     "termsConditions": "Terms & Conditions",
     "privacyPolicy": "Privacy Policy",
     "version": "Version",
+  
+    "manageNotifications": "Manage notification settings", 
+   
+    "ads": "Ads", 
+    "rating": "Rating" ,
     "stats": {
       "ads": "Ads",
       "favorites": "Favorites",
       "rating": "Rating"
+      
     }
   },
   

@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next'; // <--- New Import
 import {
   ActivityIndicator,
   Alert,
@@ -26,10 +27,11 @@ export default function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
 const handleLogin = async () => {
   if (!email || !password) {
-    Alert.alert('Error', 'Please fill in all fields');
+    Alert.alert(t('common.error'), t('auth.fillAllFields'));
     return;
   }
 
@@ -53,9 +55,7 @@ const handleLogin = async () => {
     
 
     // 4. Get user data from backend - PASS TOKEN DIRECTLY
-    // const userData = await authApi.getMe(firebaseToken);
-    // console.log('✅ User data fetched:', userData);
-    // dispatch(setUser(userData.user));
+   
 
     const userData = await authApi.getMe();
     dispatch(setUser(userData.user));
@@ -71,23 +71,34 @@ socketService.connect();
   } catch (error) {
     console.error('❌ Login error:', error);
     
-    // Better error messages
-    let errorMessage = 'Login failed';
-    if (error.code === 'auth/user-not-found') {
-      errorMessage = 'No account found with this email';
-    } else if (error.code === 'auth/wrong-password') {
-      errorMessage = 'Incorrect password';
-    } else if (error.code === 'auth/invalid-email') {
-      errorMessage = 'Invalid email address';
-    } else if (error.code === 'auth/user-disabled') {
-      errorMessage = 'This account has been disabled';
-    } else if (error.error) {
-      errorMessage = error.error;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
-    
-    Alert.alert('Error', errorMessage);
+  
+
+    let errorMessageKey = 'errors.somethingWentWrong'; // Default fallback (from your errors object)
+
+      if (error.code === 'auth/user-not-found') {
+        // Suggested New Key: auth.noAccountFound
+        errorMessageKey = 'auth.noAccountFound';
+      } else if (error.code === 'auth/wrong-password') {
+        // Suggested New Key: auth.incorrectPassword
+        errorMessageKey = 'auth.incorrectPassword';
+      } else if (error.code === 'auth/invalid-email') {
+        // Existing Key: auth.invalidEmail
+        errorMessageKey = 'auth.invalidEmail';
+      } else if (error.code === 'auth/user-disabled') {
+        // Suggested New Key: auth.accountDisabled
+        errorMessageKey = 'auth.accountDisabled';
+      } else if (error.error) {
+        // Use the untranslated API error message for specific backend failures
+        errorMessageKey = error.error; 
+      } else if (error.message) {
+        // Use the untranslated Firebase/network error message as a last resort
+        errorMessageKey = error.message; 
+      }
+      
+      // t() might return the key itself, which is fine for raw messages.
+      const displayMessage = t(errorMessageKey) === errorMessageKey ? errorMessageKey : t(errorMessageKey);
+      
+      Alert.alert(t('common.error'), displayMessage);
   } finally {
     setLoading(false);
   }
@@ -112,17 +123,21 @@ const registerPushNotifications = async () => {
   }
 };
   return (
-    <KeyboardAvoidingView 
+   <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <View style={styles.content}>
-        <Text style={styles.title}>Welcome Back!</Text>
-        <Text style={styles.subtitle}>Login to your account</Text>
+        {/* Title: "Welcome Back!" -> t('auth.welcomeBack') */}
+        <Text style={styles.title}>{t('auth.welcomeBack')}</Text> 
+        
+        {/* Subtitle: "Login to your account" -> t('auth.loginToAccount') */}
+        <Text style={styles.subtitle}>{t('auth.loginToAccount')}</Text> 
 
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          // Placeholder: "Email" -> t('auth.email')
+          placeholder={t('auth.email')} 
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -132,7 +147,8 @@ const registerPushNotifications = async () => {
 
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          // Placeholder: "Password" -> t('auth.password')
+          placeholder={t('auth.password')} 
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -145,9 +161,11 @@ const registerPushNotifications = async () => {
           disabled={loading}
         >
           {loading ? (
-            <ActivityIndicator color="#fff" />
+            // Loading text can be localized from 'common.loading' if needed
+            <ActivityIndicator color="#fff" /> 
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            // Button Text: "Login" -> t('auth.login')
+            <Text style={styles.buttonText}>{t('auth.login')}</Text> 
           )}
         </TouchableOpacity>
 
@@ -155,14 +173,21 @@ const registerPushNotifications = async () => {
           onPress={() => router.push('/(auth)/signup')}
           disabled={loading}
         >
+          {/* Compound Text: "Don't have an account? Sign Up" */}
           <Text style={styles.link}>
-            Don't have an account? <Text style={styles.linkBold}>Sign Up</Text>
+            {/* Base Text: "Don't have an account?" -> t('auth.dontHaveAccount') */}
+            {t('auth.dontHaveAccount')} 
+            
+            <Text style={styles.linkBold}> {t('auth.signup')}</Text>
           </Text>
         </TouchableOpacity>
+        
+       
+        
       </View>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

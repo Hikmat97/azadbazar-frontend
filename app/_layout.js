@@ -1,3 +1,4 @@
+// app/_layout.js
 import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -68,6 +69,7 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
+          <Stack.Screen name="language-selection" />
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
         </Stack>

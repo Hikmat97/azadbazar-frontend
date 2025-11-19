@@ -3,6 +3,7 @@ import socketService from '../../src/services/socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
@@ -33,24 +34,28 @@ export default function SignupScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const validateForm = () => {
+ const validateForm = () => {
+    // 1. Check required fields
     if (!formData.fullName || !formData.email || !formData.password) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      Alert.alert(t('common.error'), t('auth.fillAllFields')); // Localized
       return false;
     }
 
+    // 2. Check password length
     if (formData.password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Alert.alert(t('common.error'), t('auth.passwordTooShort')); // Localized
       return false;
     }
 
+    // 3. Check password match
     if (formData.password !== formData.confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Alert.alert(t('common.error'), t('auth.passwordsNotMatch')); // Localized
       return false;
     }
 
@@ -96,9 +101,7 @@ export default function SignupScreen() {
     }
 
     // 5. Get user data from backend - PASS TOKEN DIRECTLY
-    // const userData = await authApi.getMe(firebaseToken);
-    // console.log('✅ User data fetched:', userData);
-    // dispatch(setUser(userData.user));
+   
      const userData = await authApi.getMe();
     dispatch(setUser(userData.user));
 
@@ -109,22 +112,28 @@ export default function SignupScreen() {
     registerPushNotifications();
 
 
-  } catch (error) {
+ } catch (error) {
     console.error('❌ Signup error:', error);
     
     // Better error messages
-    let errorMessage = 'Signup failed';
+    let errorMessageKey = 'errors.somethingWentWrong'; // Fallback
+    
     if (error.code === 'auth/email-already-in-use') {
-      errorMessage = 'This email is already registered';
+      // **New Key Required: auth.emailInUse**
+      errorMessageKey = 'auth.emailInUse';
     } else if (error.code === 'auth/weak-password') {
-      errorMessage = 'Password should be at least 6 characters';
+      // Existing Key: auth.passwordTooShort
+      errorMessageKey = 'auth.passwordTooShort';
     } else if (error.code === 'auth/invalid-email') {
-      errorMessage = 'Invalid email address';
+      // Existing Key: auth.invalidEmail
+      errorMessageKey = 'auth.invalidEmail';
     } else if (error.message) {
-      errorMessage = error.message;
+      errorMessageKey = error.message; // Use raw message if no code match
     }
     
-    Alert.alert('Error', errorMessage);
+    const displayMessage = t(errorMessageKey) === errorMessageKey ? errorMessageKey : t(errorMessageKey);
+
+    Alert.alert(t('common.error'), displayMessage); // Localized Alert title
   } finally {
     setLoading(false);
   }
@@ -154,61 +163,95 @@ style={styles.container}
 >
 <ScrollView contentContainerStyle={styles.scrollContent}>
 <View style={styles.content}>
-<Text style={styles.title}>Create Account</Text>
-<Text style={styles.subtitle}>Sign up to get started</Text>      <TextInput
-        style={styles.input}
-        placeholder="Full Name *"
-        value={formData.fullName}
-        onChangeText={(text) => handleChange('fullName', text)}
-        editable={!loading}
-      />      <TextInput
-        style={styles.input}
-        placeholder="Email *"
-        value={formData.email}
-        onChangeText={(text) => handleChange('email', text)}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        editable={!loading}
-      />      <TextInput
-        style={styles.input}
-        placeholder="Phone Number (Optional)"
-        value={formData.phoneNumber}
-        onChangeText={(text) => handleChange('phoneNumber', text)}
-        keyboardType="phone-pad"
-        editable={!loading}
-      />      <TextInput
-        style={styles.input}
-        placeholder="Password *"
-        value={formData.password}
-        onChangeText={(text) => handleChange('password', text)}
-        secureTextEntry
-        editable={!loading}
-      />      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password *"
-        value={formData.confirmPassword}
-        onChangeText={(text) => handleChange('confirmPassword', text)}
-        secureTextEntry
-        editable={!loading}
-      />      <TouchableOpacity 
-        style={[styles.button, loading && styles.buttonDisabled]}
-        onPress={handleSignup}
-        disabled={loading}
-      >
-        {loading ? (
-          <ActivityIndicator color="#fff" />
-        ) : (
-          <Text style={styles.buttonText}>Sign Up</Text>
-        )}
-      </TouchableOpacity>      <TouchableOpacity 
-        onPress={() => router.back()}
-        disabled={loading}
-      >
-        <Text style={styles.link}>
-          Already have an account? <Text style={styles.linkBold}>Login</Text>
-        </Text>
-      </TouchableOpacity>
-    </View>
+  {/* Title: "Create Account" */}
+  <Text style={styles.title}>{t('auth.createAccount')}</Text> 
+  
+  {/* Subtitle: "Sign up to get started" */}
+  <Text style={styles.subtitle}>{t('auth.signupToStart')}</Text>
+
+  {/* Full Name Input */}
+  <TextInput
+    style={styles.input}
+    // Full Name: t('auth.fullName') + " *" (optional)
+    placeholder={`${t('auth.fullName')} *`} 
+    value={formData.fullName}
+    onChangeText={(text) => handleChange('fullName', text)}
+    editable={!loading}
+  />
+  
+  {/* Email Input */}
+  <TextInput
+    style={styles.input}
+    // Email: t('auth.email') + " *" (optional)
+    placeholder={`${t('auth.email')} *`} 
+    value={formData.email}
+    onChangeText={(text) => handleChange('email', text)}
+    keyboardType="email-address"
+    autoCapitalize="none"
+    editable={!loading}
+  />
+  
+  {/* Phone Number Input */}
+  <TextInput
+    style={styles.input}
+    // Phone Number: t('auth.phoneNumber') + " (" + t('common.optional') + ")"
+    // NOTE: You don't have a 'common.optional' key, using the full string here for now.
+    // If you add common.optional, you can use t('auth.phoneNumber') + t('common.optional')
+    placeholder={t('auth.phoneNumber') + " (Optional)"}
+    value={formData.phoneNumber}
+    onChangeText={(text) => handleChange('phoneNumber', text)}
+    keyboardType="phone-pad"
+    editable={!loading}
+  />
+  
+  {/* Password Input */}
+  <TextInput
+    style={styles.input}
+    // Password: t('auth.password') + " *" (optional)
+    placeholder={`${t('auth.password')} *`} 
+    value={formData.password}
+    onChangeText={(text) => handleChange('password', text)}
+    secureTextEntry
+    editable={!loading}
+  />
+  
+  {/* Confirm Password Input */}
+  <TextInput
+    style={styles.input}
+    // Confirm Password: t('auth.confirmPassword') + " *" (optional)
+    placeholder={`${t('auth.confirmPassword')} *`} 
+    value={formData.confirmPassword}
+    onChangeText={(text) => handleChange('confirmPassword', text)}
+    secureTextEntry
+    editable={!loading}
+  />
+
+  <TouchableOpacity 
+    style={[styles.button, loading && styles.buttonDisabled]}
+    onPress={handleSignup}
+    disabled={loading}
+  >
+    {loading ? (
+      <ActivityIndicator color="#fff" />
+    ) : (
+      // Button Text: "Sign Up"
+      <Text style={styles.buttonText}>{t('auth.signup')}</Text> 
+    )}
+  </TouchableOpacity>
+
+  <TouchableOpacity 
+    onPress={() => router.back()}
+    disabled={loading}
+  >
+    <Text style={styles.link}>
+      {/* Base Text: "Already have an account?" */}
+      {t('auth.alreadyHaveAccount')} 
+      
+      {/* Nested Bold Text: "Login" */}
+      <Text style={styles.linkBold}> {t('auth.login')}</Text>
+    </Text>
+  </TouchableOpacity>
+</View>
   </ScrollView>
 </KeyboardAvoidingView>
 );

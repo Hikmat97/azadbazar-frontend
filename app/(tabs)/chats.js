@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -19,6 +20,7 @@ import { addOnlineUser, removeOnlineUser, setConversations } from '../../src/sto
 export default function ChatsScreen() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const { conversations, onlineUsers } = useSelector(state => state.chat);
   const { user } = useSelector(state => state.auth);
   const [loading, setLoading] = useState(true);
@@ -95,36 +97,40 @@ export default function ChatsScreen() {
     return onlineUsers.includes(userId);
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color="#FF6B6B" />
-        <Text style={styles.loadingText}>Loading chats...</Text>
-      </View>
-    );
-  }
+ if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#FF6B6B" />
+        {/* Loading Text: "Loading chats..." -> t('common.loading') */}
+        <Text style={styles.loadingText}>{t('common.loading')}</Text>
+      </View>
+    );
+  }
 
-  if (!conversations || conversations.length === 0) {
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Chats</Text>
-        </View>
-        <View style={styles.empty}>
-          <Ionicons name="chatbubbles-outline" size={80} color="#ddd" />
-          <Text style={styles.emptyText}>No conversations yet</Text>
-          <Text style={styles.emptySubtext}>
-            Start chatting with sellers by clicking "Chat" on any listing
-          </Text>
-        </View>
-      </View>
-    );
-  }
+ if (!conversations || conversations.length === 0) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.header}>
+            {/* Title: "Chats" -> t('tabs.chats') or t('chat.title') */}
+          <Text style={styles.title}>{t('tabs.chats')}</Text> 
+        </View>
+        <View style={styles.empty}>
+          <Ionicons name="chatbubbles-outline" size={80} color="#ddd" />
+            {/* Empty Text: "No conversations yet" -> t('chat.noConversations') */}
+          <Text style={styles.emptyText}>{t('chat.noConversations')}</Text> 
+          <Text style={styles.emptySubtext}>
+            {/* Empty Subtext: "Start chatting..." -> t('chat.startChatting') */}
+            {t('chat.startChatting')}
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Chats</Text>
+        <Text style={styles.title}>{t('tabs.chats')}</Text>
       </View>
 
       <FlatList
