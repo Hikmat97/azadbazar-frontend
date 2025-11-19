@@ -5,7 +5,7 @@ import { initReactI18next } from 'react-i18next';
 // Import translations
 import da from './da/translation.json';
 import en from './en/translation.json';
-import ps from './ps/translation.json';
+import ps from './pa/translation.json';
 
 const LANGUAGE_KEY = '@app_language';
 
